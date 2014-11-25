@@ -1,0 +1,15 @@
+@bgLight: #e3e3e3;
+@bgDark: #333333;
+@color: #222222;
+
+.border-radius (@radius) {
+	border-radius: @radius;
+	background-clip: padding-box;
+}
+
+.border-image (@val) {
+	-webkit-border-image: @val;
+	-moz-border-image: @val;
+	-o-border-image: @val;
+	border-image: @val;
+}

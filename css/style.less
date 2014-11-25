@@ -1,0 +1,167 @@
+@import "common.less";
+@import "reset.less";
+
+html {
+	overflow: hidden;
+}
+
+body {
+	font-family: consolas, monaco, 'courier new', monospace;
+}
+
+.wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: hidden;
+}
+
+
+.stage {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 5120px;
+	height: 2880px;
+}
+
+.lightBg {
+	.stage {
+		background: @bgLight url(../imgs/bg-grid-dark.png);
+	}
+}
+
+.darkBg {
+	.stage {
+		background: @bgDark url(../imgs/bg-grid-light.png);
+	}
+}
+
+.key {
+	position: absolute;
+	overflow: hidden;
+
+	&.selected {
+		z-index: 9000;
+
+		.cap {
+			border: 2px solid #d22;
+		}
+	}
+
+	.cap {
+		position: absolute;
+		left: 2px;
+		top: 2px;
+		bottom: 1px;
+		right: 1px;
+
+		background: #fafafa;
+		border: 1px solid #999;
+		.border-radius(5px);
+	}
+
+	.dimensions {
+		position: absolute;
+		font-size: 1.1em;
+		top: 50%;
+		margin-top: -10px;
+		left: -99999px;
+		height: 20px;
+		width: 100%;
+		text-align: center;
+
+		span {
+			display: inline-block;
+			width: auto;
+			height: 20px;
+			line-height: 19px;
+			padding: 0 5px;
+			background: #fff;
+			border: 1px solid #000;
+		}
+	}
+
+	&.resizing {
+		.dimensions {
+			left: 0px;
+		}
+	}
+}
+
+.selectBox {
+	position: absolute;
+	z-index: 9100;
+
+	&.include {
+		background: rgba(60,210,20,0.2);
+		border: 1px solid rgba(60,210,20,0.7);
+	}
+
+	&.hit {
+		background: rgba(100,140,250,0.2);
+		border: 1px solid rgba(100,140,250,0.7);
+	}
+}
+
+.marquee {
+	position: absolute;
+	z-index: 9000;
+	border: 6px solid transparent;
+	.border-image(url(../imgs/selection.gif) 6 6 round);
+/*	cursor: -webkit-grab;
+	cursor: grab;*/
+
+	.resize-handle {
+		position: absolute;
+		width: 9px;
+		height: 9px;
+		border: 1px solid #000;
+		background: #fff;
+	}
+
+/*	.NE {
+		cursor: nesw-resize;
+		top: -10px;
+		right: -10px;
+	}
+
+	.SW {
+		cursor: nesw-resize;
+		bottom: -10px;
+		left: -10px;
+	}
+
+	.NW {
+		cursor: nwse-resize;
+		top: -10px;
+		left: -10px;
+	}
+*/
+	.resize-se {
+		cursor: nwse-resize;
+		bottom: -10px;
+		right: -10px;
+	}
+
+	.resize-e {
+		cursor: ew-resize;
+		top: 50%;
+		margin-top: -5px;
+		right: -10px;
+	}
+
+	.resize-s {
+		cursor: ns-resize;
+		left: 50%;
+		margin-left: -5px;
+		bottom: -10px;
+	}
+}
+
+.hud {
+	position: absolute;
+	z-index: 10000;
+}
