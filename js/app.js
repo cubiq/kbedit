@@ -99,11 +99,11 @@ KBE.Class.prototype = {
 			case 8:
 			case 46:
 				e.preventDefault();
-
 				this.deleteSelectedKey();
 				break;
 			// 1: create a 1x1 units key
 			case 49:
+				e.preventDefault();
 				this.createKey({
 					unitX: 100,
 					x: this.mouseX,
@@ -112,6 +112,7 @@ KBE.Class.prototype = {
 				break;
 			// 2: create a 2x1 units key
 			case 50:
+				e.preventDefault();
 				this.createKey({
 					unitX: 625,
 					x: this.mouseX,
@@ -120,6 +121,7 @@ KBE.Class.prototype = {
 				break;
 			// 3: create a 1x2 units key
 			case 51:
+				e.preventDefault();
 				this.createKey({
 					unitY: 200,
 					x: this.mouseX,
