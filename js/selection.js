@@ -23,7 +23,7 @@ Selection.prototype = {
 
 		this.keys = [];
 
-		this.$selectBox.remove();
+		this.$selectBox.remove();	// it seems jquery already removes all events, eventually...
 		this.$selectBox = undefined;
 	},
 
@@ -189,8 +189,7 @@ Selection.prototype = {
 			return;
 		}
 
-		e.preventDefault();
-		e.stopPropagation();
+		this.dragged = false;
 
 		this.dragStartX = e.pageX;
 		this.dragStartY = e.pageY;
@@ -201,6 +200,9 @@ Selection.prototype = {
 	},
 
 	drag: function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
 		var deltaX = this.dragStartX - e.pageX;
 		var deltaY = this.dragStartY - e.pageY;
 
@@ -210,6 +212,8 @@ Selection.prototype = {
 		if ( !deltaX && !deltaY ) {
 			return;
 		}
+
+		this.dragged = true;
 
 		if ( deltaX !== 0 ) {
 			this.dragStartX = e.pageX;
@@ -246,6 +250,13 @@ Selection.prototype = {
 		KBE.$stage
 			.off('mousemove', this.drag)
 			.off('mouseup', this.dragEnd);
+
+		if ( this.dragged ) {
+			return;
+		}
+
+		// if not dragged try to modify selection
+
 	}
 
 };

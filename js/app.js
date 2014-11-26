@@ -92,7 +92,7 @@ KBE.Class.prototype = {
 	},
 
 	shortcuts: function (e) {
-		console.log(e.which);
+		//console.log(e.which);
 
 		switch ( e.which ) {
 			// DEL: delete selected keys
@@ -184,7 +184,7 @@ KBE.Class.prototype = {
 			this.startX -= this.stageX;
 			this.startY -= this.stageY;
 
-			// check if we clicked over a key already
+			// check if we clicked over a key
 			var rect1 = {};
 			var rect2 = {
 				x1: this.startX,
@@ -193,13 +193,9 @@ KBE.Class.prototype = {
 				y2: this.startY
 			};
 
-			// shift key add to selection
-			if ( !e.shiftKey ) {
-				this.select.clear();
-			}
-
 			var that = this;
 			var newSelection;
+			// check if we clicked over a key
 			$.each(this.keys, function (i, key) {
 				rect1 = {
 					x1: key.x,
@@ -208,21 +204,30 @@ KBE.Class.prototype = {
 					y2: key.y + key.height
 				};
 
-				if ( that.collision(rect1, rect2) ) {
+				if ( KBE.collision(rect1, rect2) ) {
+					if ( that.select.isSelected(key) ) {
+						return false;
+					}
+
+					if ( !e.shiftKey ) {
+						that.select.clear();
+					}
+
 					that.select.add(key);
 					newSelection = true;
+
 					return false;	// exit the $.each loop
 				}
 			});
 
-			if ( !newSelection ) {
-				this.select.clear();
-			}
-
 			// if we clicked on a key we initiate the drag sequence
-			if ( !this.select.isEmpty() ) {
+			if ( !this.select.isEmpty() && ( e.target == this.select.$selectBox.get(0) || newSelection ) ) {
 				that.select.dragStart(e);
 				return;
+			}
+
+			if ( !e.shiftKey ) {
+				this.select.clear();
 			}
 
 			// create the selection box
@@ -293,10 +298,8 @@ KBE.Class.prototype = {
 			y2: pos.top + this.$selectBox.height()
 		};
 
-		//this.select.clear();
 		this.$selectBox.remove();
 
-		var collision = this.collision;
 		$.each(this.keys, function (i, key) {
 			rect1 = {
 				x1: key.x,
@@ -305,18 +308,10 @@ KBE.Class.prototype = {
 				y2: key.y + key.height
 			};
 
-			if ( collision(rect1, rect2, type) ) {
+			if ( KBE.collision(rect1, rect2, type) ) {
 				KBE.select.add(key);
 			}
 		});
-	},
-
-	collision: function (a, b, type) {
-		if ( type == 'include' ) {
-			return a.x1 >= b.x1 && a.x2 <= b.x2 && a.y1 >= b.y1 && a.y2 <= b.y2;
-		}
-
-		return a.x1 <= b.x2 && b.x1 <= a.x2 && a.y1 <= b.y2 && b.y1 <= a.y2;
 	},
 
 	pan: function (e) {
@@ -363,6 +358,13 @@ KBE.Class.prototype = {
 	}
 };
 
+KBE.collision = function (a, b, type) {
+	if ( type == 'include' ) {
+		return a.x1 >= b.x1 && a.x2 <= b.x2 && a.y1 >= b.y1 && a.y2 <= b.y2;
+	}
+
+	return a.x1 <= b.x2 && b.x1 <= a.x2 && a.y1 <= b.y2 && b.y1 <= a.y2;
+};
 
 window.KBE = KBE;
 
