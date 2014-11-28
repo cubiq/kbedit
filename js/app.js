@@ -67,6 +67,9 @@ KBE.Class = function () {
 	// update margins on window resize
 	$(window).on('resize', $.proxy(this.resize, this));
 
+	// create the hud
+	this.hud = new KBE.Hud();
+
 	// initiate the stage drag/drop and selection
 	this.$stage.on('mousedown', $.proxy(this.stageMouseAction, this));
 
@@ -166,6 +169,12 @@ KBE.Class.prototype = {
 		});
 
 		this.select.clear();
+	},
+
+	colorSelected: function (value) {
+		$.each(this.select.keys, function (i, key) {
+			key.color(value);
+		});
 	},
 
 	stageMouseAction: function (e) {

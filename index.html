@@ -7,15 +7,24 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="lib/jquery-2.1.1.min.js"></script>
 	<script src="js/app.js"></script>
+	<script src="js/colors.js"></script>
+	<script src="js/hud.js"></script>
 	<script src="js/key.js"></script>
 	<script src="js/selection.js"></script>
 </head>
 <body onload="KBE()">
 
-<div id="wrapper" class="wrapper lightBg">
+<div id="wrapper" class="wrapper lightTheme">
 	<div id="stage" class="stage"></div>
 
-	<div id="hud"></div>
+	<div id="switchTheme" class="hud button switchTheme"></div>
+	<div class="rightside-hud">
+		<div id="palettes" class="hud panel palettes cf">
+			<header class="title">Palettes</header>
+			<ul class="tabs"></ul>
+		</div>
+		<div id="preferences" class="hud panel properties"><header class="title">Properties</header></div>
+	</div>
 </div>
 
 </body>

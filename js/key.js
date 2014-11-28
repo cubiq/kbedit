@@ -26,7 +26,7 @@ function Key (options) {
 			width: this.width + 'px',
 			height: this.height + 'px'
 		})
-		.html('<div class="cap"></div><div class="dimensions"><span>' + (this.unitX / 100) + '&#215;' + (this.unitY / 100) + '</span></div>');
+		.html('<div class="cap"><span></span></div><div class="dimensions"><span>' + (this.unitX / 100) + '&#215;' + (this.unitY / 100) + '</span></div>');
 
 	KBE.$stage.append(this.$element);
 }
@@ -71,6 +71,12 @@ Key.prototype = {
 
 	remove: function () {
 		this.$element.remove();
+	},
+
+	color: function (value) {
+		this.$element
+			.find('.cap,.cap span')
+				.css('background-color', '#' + value);
 	}
 };
 

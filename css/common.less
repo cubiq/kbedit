@@ -13,3 +13,20 @@
 	-o-border-image: @val;
 	border-image: @val;
 }
+
+.user-select () {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.cf:before,
+.cf:after {
+	content: " ";
+	display: table;
+}
+
+.cf:after {
+	clear: both;
+}
