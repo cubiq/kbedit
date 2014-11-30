@@ -47,10 +47,15 @@ KBE.MAX_KEYS = 300;
 
 // our main app class
 KBE.Class = function () {
+	KBE.$wrapper = $('#wrapper');
 	KBE.$stage = this.$stage = $('#stage');
 
 	// holds all the keyboard keys
 	this.keys = [];
+
+	// viewport size
+	KBE.viewportWidth = KBE.$wrapper.width();
+	KBE.viewportHeight = KBE.$wrapper.height();
 
 	// current mouse position
 	this.mouseX = 0;
@@ -85,8 +90,14 @@ KBE.Class = function () {
 
 KBE.Class.prototype = {
 	resize: function (e) {
-		this.stageMaxX = $('#wrapper').width() - this.$stage.width();
-		this.stageMaxY = $('#wrapper').height() - this.$stage.height();
+		KBE.viewportWidth = KBE.$wrapper.width();
+		KBE.viewportHeight = KBE.$wrapper.height();
+
+		this.stageMaxX = KBE.viewportWidth - this.$stage.width();
+		this.stageMaxY = KBE.viewportHeight - this.$stage.height();
+
+		// update panels position
+		this.hud.updatePanels();
 	},
 
 	mouse: function (e) {

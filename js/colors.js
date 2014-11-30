@@ -2,7 +2,7 @@
 KBE.colors = {};
 
 KBE.colors.GMK = {
-	'UN0001': 'F6F6F6',
+	'UN0001': 'FEFEFE',
 	'CP': 'F5F5F5',
 	'3K': 'E6E6E6',
 	'2M': 'D9D9D9',
