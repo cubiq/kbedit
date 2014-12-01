@@ -157,6 +157,28 @@ KBE.Class.prototype = {
 		options.y = Math.floor(((options.y || 0) - this.stageY) / KBE.UNIT_HEIGHT) * KBE.UNIT_HEIGHT;
 		options.unitX = options.unitX || 100;
 		options.unitY = options.unitY || 100;
+		var width = options.unitX / 25 * KBE.GRID_UNIT_X;
+		var height = options.unitY / 25 * KBE.GRID_UNIT_Y;
+
+		// if the key overlaps another, push it one position to the right
+		var overlap = true;
+
+		function overlapCheck (i, key) {	// overlapCheck is in a loop, so we cache it for performance
+			if ( options.x >= key.x &&
+				 options.x < key.x + key.width &&
+				 options.y >= key.y &&
+				 options.y < key.y + key.height ) {
+
+				options.x = key.x + key.width;
+				overlap = true;
+				return false;
+			}
+		}
+
+		while ( overlap ) {
+			overlap = false;
+			$.each(this.keys, overlapCheck);
+		}
 
 		var key = new KBE.Key(options);
 		this.keys.push(key);
