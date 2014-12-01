@@ -60,8 +60,8 @@ Key.prototype = {
 	},
 
 	move: function (x, y) {
-		this.x -= x;
-		this.y -= y;
+		this.x += x;
+		this.y += y;
 
 		this.$element.css({
 			top: this.y + 'px',

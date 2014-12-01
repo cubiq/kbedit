@@ -191,8 +191,8 @@ Selection.prototype = {
 
 		this.dragged = false;
 
-		this.dragStartX = e.pageX;
-		this.dragStartY = e.pageY;
+		this.dragStartX = Math.floor(e.pageX / KBE.GRID_UNIT_X) * KBE.GRID_UNIT_X;
+		this.dragStartY = Math.floor(e.pageY / KBE.GRID_UNIT_Y) * KBE.GRID_UNIT_Y;
 
 		KBE.$stage
 			.on('mousemove', $.proxy(this.drag, this))
@@ -203,28 +203,19 @@ Selection.prototype = {
 		e.preventDefault();
 		e.stopPropagation();
 
-		var deltaX = this.dragStartX - e.pageX;
-		var deltaY = this.dragStartY - e.pageY;
-
-		deltaX = Math.floor(Math.abs(deltaX) / KBE.GRID_UNIT_X) * KBE.GRID_UNIT_X * (deltaX && deltaX / Math.abs(deltaX));
-		deltaY = Math.floor(Math.abs(deltaY) / KBE.GRID_UNIT_Y) * KBE.GRID_UNIT_Y * (deltaY && deltaY / Math.abs(deltaY));
-
-		if ( !deltaX && !deltaY ) {
+		if ( e.which != 1 ) {
+			this.dragEnd(e);
 			return;
 		}
 
-		this.dragged = true;
+		var x = Math.floor(e.pageX / KBE.GRID_UNIT_X) * KBE.GRID_UNIT_X;
+		var y = Math.floor(e.pageY / KBE.GRID_UNIT_Y) * KBE.GRID_UNIT_Y;
 
-		if ( deltaX !== 0 ) {
-			this.dragStartX = e.pageX;
-		}
+		var deltaX = x - this.dragStartX;
+		var deltaY = y - this.dragStartY;
 
-		if ( deltaY !== 0 ) {
-			this.dragStartY = e.pageY;
-		}
-
-		this.x1 -= deltaX;
-		this.y1 -= deltaY;
+		this.x1 += deltaX;
+		this.y1 += deltaY;
 
 		if ( this.x1 < 0 ) {
 			this.x1 = 0;
@@ -236,14 +227,23 @@ Selection.prototype = {
 			deltaY = 0;
 		}
 
-		$.each(this.keys, function (i, key) {
-			key.move(deltaX, deltaY);
-		});
+		// TODO: add check for lower-right corner
 
-		this.$selectBox.css({
-			top: this.y1 + 'px',
-			left: this.x1 + 'px'
-		});
+		if ( deltaX || deltaY ) {
+			// move the keys
+			$.each(this.keys, function (i, key) {
+				key.move(deltaX, deltaY);
+			});
+
+			// move the select box itself
+			this.$selectBox.css({
+				top: this.y1 + 'px',
+				left: this.x1 + 'px'
+			});
+		}
+
+		this.dragStartX = x;
+		this.dragStartY = y;
 	},
 
 	dragEnd: function (e) {
@@ -254,9 +254,6 @@ Selection.prototype = {
 		if ( this.dragged ) {
 			return;
 		}
-
-		// if not dragged try to modify selection
-
 	}
 
 };

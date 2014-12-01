@@ -81,6 +81,9 @@ KBE.Class = function () {
 	// create the selection manager
 	KBE.select = this.select = new KBE.Selection();
 
+	// prevent the context menu
+	this.$stage.on('contextmenu', this.preventMenu);
+
 	$('body')
 		// update the current mouse position
 		.on('mousemove', $.proxy(this.mouse, this))
@@ -218,7 +221,7 @@ KBE.Class.prototype = {
 		this.startY = e.pageY;
 
 		// left click + CTRL = pan stage
-		if ( e.which == 1 && e.ctrlKey ) {
+		if ( e.which == 1 && e.ctrlKey || e.which == 3 ) {
 			this.$stage
 				.on('mousemove', $.proxy(this.pan, this))
 				.on('mouseup', $.proxy(this.panEnd, this));
@@ -399,6 +402,11 @@ KBE.Class.prototype = {
 		this.$stage
 			.off('mousemove', this.pan)
 			.off('mouseup', this.panEnd);
+	},
+
+	preventMenu: function (e) {
+		e.preventDefault();
+		return false;
 	}
 };
 
