@@ -207,10 +207,14 @@ KBE.Class.prototype = {
 		this.select.clear();
 	},
 
-	colorSelected: function (value) {
-		$.each(this.select.keys, function (i, key) {
-			key.color(value);
-		});
+	paintSelected: function (value) {
+		this.selectedColor = value;
+
+		if ( !this.paintBucket ) {
+			$.each(this.select.keys, function (i, key) {
+				key.color(value);
+			});
+		}
 	},
 
 	stageMouseAction: function (e) {
@@ -241,55 +245,73 @@ KBE.Class.prototype = {
 			};
 
 			var that = this;
-			var newSelection;
-			// check if we clicked over a key
-			$.each(this.keys, function (i, key) {
-				rect1 = {
-					x1: key.x,
-					y1: key.y,
-					x2: key.x + key.width,
-					y2: key.y + key.height
-				};
 
-				if ( KBE.collision(rect1, rect2) ) {
-					if ( that.select.isSelected(key) ) {
-						return false;
+			if ( this.paintBucket ) {
+				$.each(this.keys, function (i, key) {
+					rect1 = {
+						x1: key.x,
+						y1: key.y,
+						x2: key.x + key.width,
+						y2: key.y + key.height
+					};
+
+					if ( KBE.collision(rect1, rect2) ) {
+						key.color(that.selectedColor);
+
+						return false;	// exit the $.each loop
 					}
+				});
+			} else {
+				var newSelection;
+				// check if we clicked over a key
+				$.each(this.keys, function (i, key) {
+					rect1 = {
+						x1: key.x,
+						y1: key.y,
+						x2: key.x + key.width,
+						y2: key.y + key.height
+					};
 
-					if ( !e.shiftKey ) {
-						that.select.clear();
+					if ( KBE.collision(rect1, rect2) ) {
+						if ( that.select.isSelected(key) ) {
+							return false;
+						}
+
+						if ( !e.shiftKey ) {
+							that.select.clear();
+						}
+
+						that.select.add(key);
+						newSelection = true;
+
+						return false;	// exit the $.each loop
 					}
-
-					that.select.add(key);
-					newSelection = true;
-
-					return false;	// exit the $.each loop
-				}
-			});
-
-			// if we clicked on a key we initiate the drag sequence
-			if ( !this.select.isEmpty() && ( e.target == this.select.$selectBox.get(0) || newSelection ) ) {
-				that.select.dragStart(e);
-				return;
-			}
-
-			if ( !e.shiftKey ) {
-				this.select.clear();
-			}
-
-			// create the selection box
-			this.$selectBox = $('<div>')
-				.addClass('selectBox include')
-				.css({
-					top: this.startY + 'px',
-					left: this.startX + 'px'
 				});
 
-			this.$stage.append(this.$selectBox);
+				// if we clicked on a key we initiate the drag sequence
+				if ( !this.select.isEmpty() && ( e.target == this.select.$selectBox.get(0) || newSelection ) ) {
+					that.select.dragStart(e);
+					return;
+				}
 
-			this.$stage
-				.on('mousemove', $.proxy(this.selectBox, this))
-				.on('mouseup', $.proxy(this.selectBoxEnd, this));
+				if ( !e.shiftKey ) {
+					this.select.clear();
+				}
+
+				// create the selection box
+				this.$selectBox = $('<div>')
+					.addClass('selectBox include')
+					.css({
+						top: this.startY + 'px',
+						left: this.startX + 'px'
+					});
+
+				this.$stage.append(this.$selectBox);
+
+				this.$stage
+					.on('mousemove', $.proxy(this.selectBox, this))
+					.on('mouseup', $.proxy(this.selectBoxEnd, this));
+			}
 		}
 	},
 
@@ -402,6 +424,18 @@ KBE.Class.prototype = {
 		this.$stage
 			.off('mousemove', this.pan)
 			.off('mouseup', this.panEnd);
+	},
+
+	paintBucketMode: function (status) {
+		this.paintBucket = status !== undefined ? status : !this.paintBucket;
+
+		this.select.clear();
+
+		if ( this.paintBucket ) {
+			$('body').addClass('paintBucketMode');
+		} else {
+			$('body').removeClass('paintBucketMode');
+		}
 	},
 
 	preventMenu: function (e) {

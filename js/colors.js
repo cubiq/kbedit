@@ -1,6 +1,19 @@
 
 KBE.colors = {};
 
+KBE.colors.KBE = {
+	'white': 'FFFFFF',
+	'silver': 'CCCCCC',
+	'coal': '5A5A5A',
+	'black': '000000',
+	'red': 'DA0000',
+	'orange': 'F77A00',
+	'yellow': 'FFEE00',
+	'green': '00BB11',
+	'blue': '2244E0',
+	'violet': '8800C0',
+};
+
 KBE.colors.GMK = {
 	'UN0001': 'FEFEFE',
 	'CP': 'F5F5F5',

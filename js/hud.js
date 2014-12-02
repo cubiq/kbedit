@@ -18,36 +18,77 @@ function Hud () {
 
 	// add tabs to palettes panel
 	var $tabs = $('<ul>')
-		.addClass('tabs');
+		.addClass('tabs cf');
+
 	this.palettes.$element.append($tabs);
 
 	var that = this;
 
 	// add colors to palettes
 	$.each(KBE.colors, function (i, val) {
+		// create the new tab
 		$tabs.append(
-			$('<li>').html(i)
+			$('<li>')
+				.attr('id', 'tab-' + i)
+				.html(i == 'KBE' ? '&#8270;' : i)
+				.addClass('tab')
+				.addClass(i == 'KBE' && 'active')
+				.on('click', $.proxy(that.switchPalette, that))
 		);
 
+		// create the new palette
 		var $palette = $('<ul>')
-			.addClass('colors palette-' + i)
-			.attr('id', 'palette-' + i);
+			.addClass('cf colors palette-' + i)
+			.attr('id', 'palette-' + i)
+			.on('mousemove', $.proxy(that.hoverColor, that));
 
+		if ( i == 'KBE' ) {
+			$palette.addClass('active');
+		}
+
+		// attach the color to the palette
 		$.each(val, function (name, color) {
 			$palette.append(
 				$('<li>')
 					.css('background', '#' + color)
+					.data({
+						group: i,
+						color: color,
+						code: name
+					})
 					.on('click', function (e) {
 						e.preventDefault();
 						e.stopPropagation();
 
-						KBE().colorSelected(color);
+						KBE().paintSelected(color);
 					})
 			);
 		});
 
 		that.palettes.$element.append($palette);
 	});
+
+	// add the palette footer
+	this.palettes.$element.append(
+		$('<footer>')
+			.addClass('info')
+	);
+
+	this.$selectedColor = $('<input>')
+		.attr('disabled', true)
+		.addClass('selectedColor');
+
+	this.$paintBucket = $('<button>')
+		.attr({
+			id: 'paintBucket',
+			type: 'button'
+		})
+		.addClass('paintBucket')
+		.on('click', $.proxy(this.paintBucket, this));
+
+	$('footer', this.palettes.$element)
+		.append(this.$selectedColor)
+		.append(this.$paintBucket);
 
 	// the dimensions must be updated every time content changes
 	this.palettes.updateDimensions();
@@ -65,6 +106,39 @@ Hud.prototype = {
 			.toggleClass('darkTheme');
 
 		this.$switchTheme.html( this.$switchTheme.html() == 'dark' ? 'light' : 'dark');
+	},
+
+	hoverColor: function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		var data = $(e.target).data();
+
+		if ( !('color' in data) ) {
+			return;
+		}
+
+		this.$selectedColor.val(data.code);
+	},
+
+	switchPalette: function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		var id = '#' + e.target.id.replace('tab', 'palette');
+
+		$tab = $(e.target);
+		$palette = $(id);
+
+		$('.tab', this.palettes.$element).removeClass('active');
+		$tab.addClass('active');
+
+		$('.colors', this.palettes.$element).removeClass('active');
+		$palette.addClass('active');
+	},
+
+	paintBucket: function (e) {
+		KBE().paintBucketMode();
 	},
 
 	updatePanels: function () {
@@ -245,7 +319,7 @@ Panel.prototype = {
 Panel.defaults = {
 	x: 10,
 	y: 10,
-	width: 200,
+	width: 198,
 	lockedX: true,
 	lockedY: true
 };

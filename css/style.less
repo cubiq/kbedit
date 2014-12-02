@@ -8,6 +8,18 @@ html {
 body {
 	font-family: consolas, monaco, 'courier new', monospace;
 	color: #222;
+
+	&.paintBucketMode {
+		cursor: url(../imgs/paint-bucket.png) 12 12, auto;
+	}
+}
+
+input, textarea, select, button {
+	font-family: consolas, monaco, 'courier new', monospace;
+
+	&:focus {
+		outline: 0;
+	}
 }
 
 .wrapper {
@@ -228,8 +240,6 @@ body {
 
 .tabs {
 	display: block;
-	width: 100%;
-	float: left;
 	padding: 3px 3px 0 3px;
 	border-width: 0 0 1px 0;
 	border-style: solid;
@@ -239,25 +249,60 @@ body {
 		float: left;
 		margin-bottom: -1px;
 		margin-right: 3px;
-		border-width: 1px 1px 0 1px;
+		border-width: 1px;
 		border-style: solid;
 		padding: 1px 3px;
 	}
 }
 
+.palettes {
+	footer {
+		position: relative;
+		border-top-width: 1px;
+		border-top-style: solid;
+		padding: 8px;
+	}
+
+	.selectedColor {
+		font-size: 1em;
+		width: 52px;
+		background: transparent;
+		border-width: 1px;
+		border-style: solid;
+		padding: 1px 3px;
+	}
+
+	.paintBucket {
+		position: absolute;
+		width: 24px;
+		height: 24px;
+		border: 0;
+		top: 50%;
+		margin-top: -12px;
+		right: 8px;
+		background: url(../imgs/paint-bucket.png) 50% 50% no-repeat;
+		cursor: pointer;
+	}
+}
+
 .colors {
-	display: block;
-	float: left;
-	width: 100%;
+	display: none;
 	padding: 8px;
+
+	&.active {
+		display: block;
+	}
 
 	li {
 		position: relative;
 		float: left;
-		width: 10%;
-		height: 20px;
+		width: 19px;
+		height: 19px;
 		border-width: 1px;
 		border-style: solid;
+		margin-left: -1px;
+		margin-bottom: -1px;
+		cursor: pointer;
 
 		&:hover {
 			border-width: 1px;
@@ -291,13 +336,35 @@ body {
 
 		li {
 			border-color: #444;
-			background: #fff;
+			background: #eee;
+			cursor: pointer;
+
+			&:hover {
+				background: #ffa;
+			}
+
+			&.active {
+				border-color: #444 #444 #fff #444;
+				background: #fff;
+				cursor: default;
+			}
 		}
 	}
 
 	.colors {
 		li {
-			border-color: #fff;
+			border-color: #000;
+		}
+	}
+
+	.palettes {
+		footer {
+			border-top-color: #ddd;
+			color: #9a9a9a;
+		}
+
+		.selectedColor {
+			border-color: #444;
 		}
 	}
 }
@@ -326,6 +393,10 @@ body {
 		li {
 			border-color: #000;
 			background: #777;
+
+			&.active {
+				border-color: #000 #000 #777 #000;
+			}
 		}
 	}
 
